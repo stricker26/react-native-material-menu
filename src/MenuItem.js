@@ -1,63 +1,83 @@
 import React from 'react';
 
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  TouchableNativeFeedback,
-  View,
-} from 'react-native';
-
-const Touchable = Platform.select({
-  android: TouchableNativeFeedback,
-  default: TouchableHighlight,
-});
+import PropTypes from 'prop-types';
+import { StyleSheet, Text, TouchableHighlight, Platform, View } from 'react-native';
 
 function MenuItem({
   children,
   disabled,
   disabledTextColor,
-  ellipsizeMode,
   onPress,
   style,
   textStyle,
-  ...props
+  underlayColor,
+  withCustomIcon = false,
+  renderIcon,
+  ...props,
 }) {
-  const touchableProps =
-    Platform.OS === 'android'
-      ? { background: TouchableNativeFeedback.SelectableBackground() }
-      : {};
-
+  if(withCustomIcon){
+    return (
+      <TouchableHighlight
+        {...props}
+        disabled={disabled}
+        onPress={onPress}
+        style={[styles.container, style]}
+        underlayColor={underlayColor}
+      >
+        <View>
+        {renderIcon()}
+          <Text
+            ellipsizeMode={Platform.OS === 'ios' ? 'clip' : 'tail'}
+            numberOfLines={1}
+            style={[
+              styles.title,
+              disabled && { color: disabledTextColor },
+              textStyle,
+            ]}
+          >
+            {children}
+          </Text>
+        </View>
+      </TouchableHighlight>
+    );
+  }
   return (
-    <Touchable
+    <TouchableHighlight
+      {...props}
       disabled={disabled}
       onPress={onPress}
-      {...touchableProps}
-      {...props}
+      style={[styles.container, style]}
+      underlayColor={underlayColor}
     >
-      <View style={[styles.container, style]}>
-        <Text
-          ellipsizeMode={ellipsizeMode}
-          numberOfLines={1}
-          style={[
-            styles.title,
-            disabled && { color: disabledTextColor },
-            textStyle,
-          ]}
-        >
-          {children}
-        </Text>
-      </View>
-    </Touchable>
+      <Text
+        ellipsizeMode={Platform.OS === 'ios' ? 'clip' : 'tail'}
+        numberOfLines={1}
+        style={[
+          styles.title,
+          disabled && { color: disabledTextColor },
+          textStyle,
+        ]}
+      >
+        {children}
+      </Text>
+    </TouchableHighlight>
   );
 }
 
+MenuItem.propTypes = {
+  children: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+  disabledTextColor: PropTypes.string,
+  onPress: PropTypes.func,
+  style: TouchableHighlight.propTypes.style,
+  textStyle: Text.propTypes.style,
+  underlayColor: TouchableHighlight.propTypes.underlayColor,
+};
+
 MenuItem.defaultProps = {
   disabled: false,
-  disabledTextColor: '#bdbdbd',
-  ellipsizeMode: Platform.OS === 'ios' ? 'clip' : 'tail',
-  underlayColor: '#e0e0e0',
+  disabledTextColor: '#BDBDBD',
+  underlayColor: '#E0E0E0',
 };
 
 const styles = StyleSheet.create({
@@ -71,7 +91,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '400',
     paddingHorizontal: 16,
-    textAlign: 'left',
   },
 });
 
