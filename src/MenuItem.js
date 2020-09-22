@@ -1,7 +1,7 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, TouchableHighlight, Platform } from 'react-native';
+import { StyleSheet, Text, TouchableHighlight, Platform, View } from 'react-native';
 
 function MenuItem({
   children,
@@ -11,8 +11,36 @@ function MenuItem({
   style,
   textStyle,
   underlayColor,
-  ...props
+  withCustomIcon = false,
+  renderIcon,
+  ...props,
 }) {
+  if(withCustomIcon){
+    return (
+      <TouchableHighlight
+        {...props}
+        disabled={disabled}
+        onPress={onPress}
+        style={[styles.container, style]}
+        underlayColor={underlayColor}
+      >
+        <View>
+        {renderIcon()}
+          <Text
+            ellipsizeMode={Platform.OS === 'ios' ? 'clip' : 'tail'}
+            numberOfLines={1}
+            style={[
+              styles.title,
+              disabled && { color: disabledTextColor },
+              textStyle,
+            ]}
+          >
+            {children}
+          </Text>
+        </View>
+      </TouchableHighlight>
+    );
+  }
   return (
     <TouchableHighlight
       {...props}
