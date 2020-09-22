@@ -13,7 +13,7 @@ function MenuItem({
   underlayColor,
   withCustomIcon = false,
   renderIcon,
-  ...props,
+  ...props
 }) {
   if(withCustomIcon){
     return (
@@ -24,7 +24,7 @@ function MenuItem({
         style={[styles.container, style]}
         underlayColor={underlayColor}
       >
-        <View>
+        <View style={styles.iconContainer}>
         {renderIcon()}
           <Text
             ellipsizeMode={Platform.OS === 'ios' ? 'clip' : 'tail'}
@@ -92,6 +92,11 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     paddingHorizontal: 16,
   },
+  iconContainer: { 
+    flexDirection:'row', 
+    alignItems:'center', 
+    justifyContent:'center'
+  }
 });
 
 export default MenuItem;
